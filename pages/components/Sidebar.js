@@ -1,9 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { auth } from '../services/firebase';
-import { GoogleAuthProvider } from "firebase/auth";
 import { useAuthState, } from "react-firebase-hooks/auth"
-import { collection } from 'firebase/firestore';
+import { collection, orderBy } from 'firebase/firestore';
 import { db } from '../services/firebase'
 import ChatRow from './ChatRow';
 import { useCollection } from 'react-firebase-hooks/firestore';
@@ -12,11 +11,11 @@ import NewChat from './NewChat'
 
 function Sidebar() {
   const [user] = useAuthState(auth);
-  const googleAuth = new GoogleAuthProvider();
 
   const [chats, loading, error] = useCollection(
-    user && collection(db, "users", user?.email, "chats")
-  )
+    user && collection(db, "users", user?.email, "chats"), 
+    orderBy("createdAt", "desc")
+  );
   
   console.log(chats);
 
